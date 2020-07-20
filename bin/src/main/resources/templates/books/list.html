@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>書籍登録一覧画面</title>
+</head>
+<body>
+	<form th:action="@{/books/create}" method="post">
+		<table>
+			<tr><td>タイトル:	</td><td><input type="text" name="title"    ></td></tr>
+			<tr><td>著者：	</td><td><input type="text" name="writter"  ></td></tr>
+			<tr><td>出版社：	</td><td><input type="text" name="publisher"></td></tr>
+			<tr><td>価格：	</td><td><input type="text" name="price"    ></td></tr>
+		</table>
+		<input type="submit" value="作成">
+	</form>
+	<hr>
+	<table>
+		<tr th:each="book : ${books}"　th:object="${book}">
+			<td th:text="*{id}"       ></td>
+			<td th:text="*{title}"    ></td>
+			<td th:text="*{writter}"  ></td>
+			<td th:text="*{publisher}"></td>
+			<td th:text="*{price}"    ></td>
+			<td>
+				<form th:action="@{/books/edit}" method="post">
+					<input type="submit" name="form" value="編集">
+					<input　type="hidden" name="id"   th:value="*{id}">
+				</form>
+			</td>
+			<td>
+				<form th:action="@{/books/delete}" method="post">
+					<input type="submit" name="form" value="削除">
+					<input type="hidden" name="id"   th:value="*{id}">
+				</form>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>書籍編集画面</title>
+</head>
+<body>
+	<form th:action="@{/books/edit}" th:object="${bookForm}" method="post">
+		<table>
+			<tr><td>タイトル:	</td><td><input type="text" th:field="*{title}"    ></td></tr>
+			<tr><td>著者：	</td><td><input type="text" th:field="*{writter}"  ></td></tr>
+			<tr><td>出版社：	</td><td><input type="text" th:field="*{publisher}"></td></tr>
+			<tr><td>価格：	</td><td><input type="text" th:field="*{price}"    ></td></tr>
+		</table>
+		<input type="hidden" th:field="*{id}">
+		<input type="submit" name="goToTop" value="戻る" />
+		<input type="submit" value="更新" />
+	</form>
+</body>
+</html>
