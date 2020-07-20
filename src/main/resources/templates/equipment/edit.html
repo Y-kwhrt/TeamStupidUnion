@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link rel=“stylesheet” type=“text/css” th:href="@{/css/style.css}"/>
+<title>設備情報編集画面</title>
+</head>
+<body>
+	<form th:action="@{/equipment/create}" th:object="${equipmentFormData}" method="post">
+		<table>
+			<tr><th>品目:</th>
+			    <td><input type="text" name="type"></td>
+			    <td><span th:if="${#fields.hasErrors('type')}" th:errors="*{type}"class="error-messages">error!</span></td>
+	        </tr>
+			<tr><th>型番：</th>
+			    <td><input type="text" name="model"></td>
+			    <td><span th:if="${#fields.hasErrors('model')}" th:errors="*{model}"class="error-messages">error!</span></td>
+		    </tr>
+			<tr><th>メーカー:</th>
+			    <td><input type="text" name="manufacturer"></td>
+			    <td><span th:if="${#fields.hasErrors('manufacturer')}" th:errors="*{manufacturer}"class="error-messages">error!</span></td>
+		    </tr>
+			<tr><th>仕様：</th>
+			    <td><input type="text" name="spec"></td>
+			    <td><span th:if="${#fields.hasErrors('spec')}" th:errors="*{spec}"class="error-messages">error!</span></td>
+		    </tr>
+			<tr><th>購入日：</th>
+			    <td><input type="text" name="purchaceDate"></td>
+			    <td><span th:if="${#fields.hasErrors('purchaceDate')}" th:errors="*{purchaceDate}"class="error-messages">error!</span></td>
+		    </tr>
+			<tr><th>耐用年数：	</th>
+			    <td><input type="text" name="lifespanInYears"></td>
+			    <td><span th:if="${#fields.hasErrors('lifespanInYears')}" th:errors="*{lifespanInYears}"class="error-messages">error!</span></td>
+		    </tr>
+		</table>
+		<input type="hidden" th:field="*{id}">
+		<input type="submit" name="goToTop" value="戻る" />
+		<input type="submit" value="更新" />
+	</form>
+</body>
+</html>
