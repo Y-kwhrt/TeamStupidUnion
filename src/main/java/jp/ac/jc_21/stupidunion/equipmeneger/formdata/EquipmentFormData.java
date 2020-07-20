@@ -15,4 +15,10 @@ public class EquipmentFormData {
 	
 	private String purchaceDate; /* 購入日 */
 	private int    lifespanInYears; /* 耐用年数 */
+
+	private boolean isDepreciated        /* 減価償却 */ = false;
+	private boolean unusable             /* 使用不能 */ = false;
+	private boolean lendable             /* 貸出可能 */ = false;
+	private String  installationLocation /* 設置場所 */ = "東京本社";
+	private String  expiryDate           /* 使用期限 */ = null;
 }

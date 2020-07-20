@@ -34,18 +34,18 @@ public class EquipmentBean {
 	private String spec;         /* 仕様 */
 
 	@Column(nullable = false)
-	private String purchaceDate; /* 購入日 */
+	private String purchaceDate;    /* 購入日 */
 	@Column(nullable = false)
-	private int    lifespanInYears      /* 耐用年数 */;
+	private int    lifespanInYears; /* 耐用年数 */
 
 	// Update対象
 	@Column(nullable = false)
-	private boolean isDepreciated        /* 減価償却 */ = false;
+	private boolean isDepreciated        /* 減価償却 */;
 	@Column(nullable = false)
-	private boolean unusable             /* 使用不能 */ = false;
+	private boolean unusable             /* 使用不能 */;
 	@Column(nullable = false)
-	private boolean lendable             /* 貸出可能 */ = false;
+	private boolean lendable             /* 貸出可能 */;
 	@Column(nullable = false)
-	private String  installationLocation /* 設置場所 */ = "東京本社";
-	private String  expiryDate           /* 使用期限 */ = null;           
+	private String  installationLocation /* 設置場所 */;
+	private String  expiryDate           /* 使用期限 */;
 }
