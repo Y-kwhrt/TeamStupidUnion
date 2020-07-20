@@ -9,27 +9,27 @@
 	<form th:action="@{/equipment/create}" th:object="${equipmentFormData}" method="post">
 		<table>
 			<tr><th>品目:</th>
-			    <td><input type="text" name="type"></td>
+			    <td><input type="text" th:errorclass="error-input" th:field="*{type}"></td>
 			    <td><span th:if="${#fields.hasErrors('type')}" th:errors="*{type}"class="error-messages">error!</span></td>
 	        </tr>
 			<tr><th>型番：</th>
-			    <td><input type="text" name="model"></td>
+			    <td><input type="text" th:errorclass="error-input" th:field="*{model}"></td>
 			    <td><span th:if="${#fields.hasErrors('model')}" th:errors="*{model}"class="error-messages">error!</span></td>
 		    </tr>
 			<tr><th>メーカー:</th>
-			    <td><input type="text" name="manufacturer"></td>
+			    <td><input type="text" th:errorclass="error-input" th:field="*{manufacturer}"></td>
 			    <td><span th:if="${#fields.hasErrors('manufacturer')}" th:errors="*{manufacturer}"class="error-messages">error!</span></td>
 		    </tr>
 			<tr><th>仕様：</th>
-			    <td><input type="text" name="spec"></td>
+			    <td><input type="text" th:errorclass="error-input" th:field="*{spec}"></td>
 			    <td><span th:if="${#fields.hasErrors('spec')}" th:errors="*{spec}"class="error-messages">error!</span></td>
 		    </tr>
 			<tr><th>購入日：</th>
-			    <td><input type="text" name="purchaceDate"></td>
+			    <td><input type="text" th:errorclass="error-input" th:field="*{purchaceDate}"></td>
 			    <td><span th:if="${#fields.hasErrors('purchaceDate')}" th:errors="*{purchaceDate}"class="error-messages">error!</span></td>
 		    </tr>
 			<tr><th>耐用年数：	</th>
-			    <td><input type="text" name="lifespanInYears"></td>
+			    <td><input type="text" th:errorclass="error-input" th:field="*{lifespanInYears}"></td>
 			    <td><span th:if="${#fields.hasErrors('lifespanInYears')}" th:errors="*{lifespanInYears}"class="error-messages">error!</span></td>
 		    </tr>
 		</table>
@@ -45,6 +45,11 @@
 			<td th:text="*{spec}"></td>
 			<td th:text="*{purchaceDate}"></td>
 			<td th:text="*{lifespanInYears}"></td>
+			<td th:text="*{depreciated}"></td>
+			<td th:text="*{unusable}"></td>
+			<td th:text="*{lendable}"></td>
+			<td th:text="*{installationLocation}"></td>
+			<td th:text="*{expiryDate}"></td>
 			<td>
 				<form th:action="@{/equipment/edit}" method="post">
 					<input type="submit" name="form" value="編集">
