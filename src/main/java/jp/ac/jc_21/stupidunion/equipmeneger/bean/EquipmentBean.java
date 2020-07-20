@@ -11,26 +11,41 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "equipments")
+@Table(name = EquipmentBean.tableName)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class EquipmentBean {
+	static final String tableName = "equipment";
+	
+	// TODO division table
 	@Id
 	@GeneratedValue
 	private Integer id;          /* 管理番号 */
+	
+	// 非Update対象
 	@Column(nullable = false)
 	private String type;         /* 品名 */
-	private String model;        /* 型番 */ 
+	@Column(nullable = false)
+	private String model;        /* 型番 */
+	@Column(nullable = false)
 	private String manufacturer; /* メーカー */
+	@Column(nullable = false)
 	private String spec;         /* 仕様 */
-	
+
+	@Column(nullable = false)
 	private String purchaceDate; /* 購入日 */
-	
-	private int     lifespanInYears;      /* 耐用年数 */
-	private boolean isDepreciated;        /* 減価償却 */
-	private boolean unusable;             /* 使用不能 */
-	private boolean lendable;             /* 貸出可能 */
-	private String  installationLocation; /* 設置場所 */
-	private String  expiryDate;           /* 使用期限 */
+	@Column(nullable = false)
+	private int    lifespanInYears      /* 耐用年数 */;
+
+	// Update対象
+	@Column(nullable = false)
+	private boolean isDepreciated        /* 減価償却 */ = false;
+	@Column(nullable = false)
+	private boolean unusable             /* 使用不能 */ = false;
+	@Column(nullable = false)
+	private boolean lendable             /* 貸出可能 */ = false;
+	@Column(nullable = false)
+	private String  installationLocation /* 設置場所 */ = "東京本社";
+	private String  expiryDate           /* 使用期限 */ = null;           
 }
