@@ -1,0 +1,7 @@
+---
+applications:
+  - name: TeamStupidUnion
+    randome-route: true
+    path: target/equipmeneger-0.0.1-SNAPSHOT.jar
+    memory: 256M
+    instances: 1
