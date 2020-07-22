@@ -2,6 +2,7 @@ package jp.ac.jc_21.stupidunion.equipmeneger.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +24,22 @@ public class EquipmentService implements IEquipmentService {
 		repository.save(bean);
 		return formData;
 	}
+
 	@Override
 	public EquipmentFormData update(EquipmentFormData formData) {
-		// TODO Auto-generated method stub
-		return null;
+		// ok
+		EquipmentBean equipmentBean = new EquipmentBean();
+		BeanUtils.copyProperties(formData, equipmentBean);
+		repository.save(equipmentBean);
+		return formData;
 	}
+
 	@Override
 	public void delete(Integer id) {
-		// TODO Auto-generated method stub
+		// ok
+		EquipmentBean eb = new EquipmentBean();
+		eb.setId(id);
+		repository.delete(eb);
 	}
 
 	@Override
@@ -44,9 +53,15 @@ public class EquipmentService implements IEquipmentService {
 		}
 		return formDataList;
 	}
+
 	@Override
 	public EquipmentFormData findOne(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		// ok
+		EquipmentFormData equipmentForm = new EquipmentFormData();
+		Optional<EquipmentBean> opt = repository.findById(id);
+		opt.ifPresent(equipment -> {
+			BeanUtils.copyProperties(equipment, equipmentForm);
+		});
+		return equipmentForm;
 	}
 }
