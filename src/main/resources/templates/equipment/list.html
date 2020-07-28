@@ -43,13 +43,13 @@
 			<td th:text="*{model}"></td>
 			<td th:text="*{manufacturer}"></td>
 			<td th:text="*{spec}"></td>
-			<td th:text="*{purchaceDate}"></td>
+			<td th:text="*{#dates.format(purchaceDate, 'yyyy-MM-dd')}"></td>
 			<td th:text="*{lifespanInYears}"></td>
 			<td th:text="*{depreciated}"></td>
 			<td th:text="*{unusable}"></td>
 			<td th:text="*{lendable}"></td>
 			<td th:text="*{installationLocation}"></td>
-			<td th:text="*{expiryDate}"></td>
+			<td th:text="*{#dates.format(expiryDate, 'yyyy-MM-dd')}"></td>
 			<td>
 				<form th:action="@{/equipment/edit}" method="post">
 					<input type="submit" name="form" value="編集">
