@@ -8,7 +8,7 @@
 <body>
 	<form th:action="@{/equipment/create}" th:object="${equipmentFormData}" method="post">
 		<table>
-			<tr><th>品目:</th>
+			<tr><th>品名:</th>
 			    <td><input type="text" th:errorclass="error-input" th:field="*{type}"></td>
 			    <td><span th:if="${#fields.hasErrors('type')}" th:errors="*{type}"class="error-messages">error!</span></td>
 	        </tr>
