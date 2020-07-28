@@ -25,7 +25,7 @@
 			    <td><span th:if="${#fields.hasErrors('spec')}" th:errors="*{spec}"class="error-messages">error!</span></td>
 		    </tr>
 			<tr><th>購入日：</th>
-			    <td><input type="text" th:errorclass="error-input" th:field="*{purchaceDate}"></td>
+			    <td><input type="date" th:errorclass="error-input" th:field="*{purchaceDate}"></td>
 			    <td><span th:if="${#fields.hasErrors('purchaceDate')}" th:errors="*{purchaceDate}"class="error-messages">error!</span></td>
 		    </tr>
 			<tr><th>耐用年数：	</th>
