@@ -37,6 +37,20 @@
 	</form>
 	<hr>
 	<table>
+		<tr>
+			<th>管理番号</th>
+			<th>品名</th>
+			<th>型番</th>
+			<th>メーカー</th>
+			<th>仕様</th>
+			<th>購入日</th>
+			<th>耐用年数</th>
+			<th>減価償却済み</th>
+			<th>使用不能</th>
+			<th>貸出可能</th>
+			<th>設置場所</th>
+			<th>使用期限</th>
+		</tr>
 		<tr th:each="equipment : ${equipments}" th:object="${equipment}">
 			<th th:text="*{id}"></th>
 			<td th:text="*{type}"></td>
