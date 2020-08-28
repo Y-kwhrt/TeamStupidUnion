@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Equipmeneger {
 
 	public static void main(String[] args) {
+		error
 		SpringApplication.run(Equipmeneger.class, args);
 	}
 
