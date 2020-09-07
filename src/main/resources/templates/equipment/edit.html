@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<link rel=“stylesheet” type=“text/css” th:href="@{/css/style.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 <title>設備情報編集画面</title>
 </head>
 <body>
-	<form th:action="@{/equipment/create}" th:object="${equipmentFormData}" method="post">
+	<form th:action="@{/equipment/edit}" th:object="${equipmentFormData}" method="post">
 		<table>
 			<tr><th>品名:</th>
 			    <td><input type="text" th:errorclass="error-input" th:field="*{type}"></td>
