@@ -18,14 +18,14 @@ import jp.ac.jc_21.stupidunion.equipmeneger.service.IEquipmentService;
 @RequestMapping(EquipmentController.urlRoot)
 public class EquipmentController {
 	static final String urlRoot = "equipment";
-	static final String urlList   = "list";
+	static final String urlList = "list";
 	static final String urlCreate = "create";
-	static final String urlEdit   = "edit";
+	static final String urlEdit = "edit";
 	static final String urlDelete = "delete";
-	
+
 	@Autowired
 	IEquipmentService equipmentService;
-	
+
 	@ModelAttribute
 	EquipmentFormData setUpForm() {
 		return new EquipmentFormData();
@@ -35,27 +35,30 @@ public class EquipmentController {
 	@GetMapping
 	String list(Model model) {
 		model.addAttribute("equipments", equipmentService.findAll());
-		return urlRoot +"/"+ urlList;
+		return urlRoot + "/" + urlList;
 	}
+
 	@PostMapping(path = urlEdit, params = "form")
 	String editForm(@RequestParam Integer id, EquipmentFormData form) {
 		EquipmentFormData findForm = equipmentService.findOne(id);
 		BeanUtils.copyProperties(findForm, form);
-		return urlRoot +"/"+ urlEdit;
+		return urlRoot + "/" + urlEdit;
 	}
+
 	@PostMapping(path = urlEdit, params = "goToTop")
 	String goToTop() {
 		return "redirect:/" + urlRoot;
 	}
-	
+
 	// APIs
 	@PostMapping(path = urlCreate)
 	String create(@Validated EquipmentFormData form, BindingResult result, Model model) {
-		if(result.hasErrors())
+		if (result.hasErrors())
 			return list(model);
 		equipmentService.create(form);
 		return "redirect:/" + urlRoot;
 	}
+
 	@PostMapping(path = urlEdit)
 	String edit(@RequestParam Integer id, @Validated EquipmentFormData form, BindingResult result) {
 		if (result.hasErrors())
@@ -63,6 +66,7 @@ public class EquipmentController {
 		equipmentService.update(form);
 		return "redirect:/" + urlRoot;
 	}
+
 	@PostMapping(path = urlDelete)
 	String delete(@RequestParam Integer id) {
 		equipmentService.delete(id);
