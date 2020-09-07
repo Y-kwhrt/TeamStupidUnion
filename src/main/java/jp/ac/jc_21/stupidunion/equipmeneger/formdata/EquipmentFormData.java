@@ -14,8 +14,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class EquipmentFormData {
-	// TODO add Validation
-	@NotNull
 	private Integer id; /* 管理番号 */
 	@NotNull
 	private String type; /* 品名 */
