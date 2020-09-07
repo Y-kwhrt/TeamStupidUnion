@@ -29,7 +29,7 @@
 			    <td><span th:if="${#fields.hasErrors('purchaceDate')}" th:errors="*{purchaceDate}"class="error-messages">error!</span></td>
 		    </tr>
 			<tr><th>耐用年数：	</th>
-			    <td><input type="text" th:errorclass="error-input" th:field="*{lifespanInYears}"></td>
+			    <td><input type="number" th:errorclass="error-input" th:field="*{lifespanInYears}"></td>
 			    <td><span th:if="${#fields.hasErrors('lifespanInYears')}" th:errors="*{lifespanInYears}"class="error-messages">error!</span></td>
 		    </tr>
 		</table>
