@@ -24,6 +24,7 @@ public class EquipmentFormData {
 	@NotNull
 	private String spec; /* 仕様 */
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@NotNull
 	private Date purchaceDate; /* 購入日 */
 	@NotNull
 	@Min(1)
