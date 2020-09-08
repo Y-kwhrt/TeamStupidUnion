@@ -52,18 +52,18 @@
 			<th>使用期限</th>
 		</tr>
 		<tr th:each="equipment : ${equipments}" th:object="${equipment}">
-			<th th:text="*{id}"></th>
-			<td th:text="*{type}"></td>
-			<td th:text="*{model}"></td>
-			<td th:text="*{manufacturer}"></td>
-			<td th:text="*{spec}"></td>
-			<td th:text="*{#dates.format(purchaceDate, 'yyyy-MM-dd')}"></td>
-			<td th:text="*{lifespanInYears}"></td>
-			<td th:text="*{depreciated}"></td>
-			<td th:text="*{unusable}"></td>
-			<td th:text="*{lendable}"></td>
-			<td th:text="*{installationLocation}"></td>
-			<td th:text="*{#dates.format(expiryDate, 'yyyy-MM-dd')}"></td>
+			<th><span class="equipment-id" th:text="*{id}"></span></th>
+			<td><span class="equipment-type" th:text="*{type}"></span></td>
+			<td><span class="equipment-model" th:text="*{model}"></span></td>
+			<td><span class="equipment-manufacturer" th:text="*{manufacturer}"></span></td>
+			<td><span class="equipment-spec" th:text="*{spec}"></span></td>
+			<td><span class="equipment-purchaceDate" th:text="*{#dates.format(purchaceDate, 'yyyy-MM-dd')}"></span></td>
+			<td><span class="equipment-lifespanInYears" th:text="*{lifespanInYears}"></span></td>
+			<td><span class="equipment-depreciated" th:text="*{depreciated}"></span></td>
+			<td><span class="equipment-unusable" th:text="*{unusable}"></span></td>
+			<td><span class="equipment-lendable" th:text="*{lendable}"></span></td>
+			<td><span class="equipment-installationLocation" th:text="*{installationLocation}"></span></td>
+			<td><span class="equipment-expiryDate" th:text="*{#dates.format(expiryDate, 'yyyy-MM-dd')}"></span></td>
 			<td>
 				<form th:action="@{/equipment/edit}" method="post">
 					<input type="submit" name="form" value="編集">
