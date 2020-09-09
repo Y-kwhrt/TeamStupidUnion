@@ -1,10 +1,29 @@
 @charset "utf-8";
 
 .error-input {
-	border-color: #b94a48;
-	margin-left: 5px;
+    border-color: #b94a48;
+    margin-left: 5px;
 }
 
 .error-messages {
-	color: #b94a48;
+    color: #b94a48;
+    margin-right: 5px;
+    margin-left: auto;
+}
+
+.input-title {
+    color: purple;
+    font-size: 12pt;
+    width: 250px;
+    margin-left: 50px;
+    margin-right: auto;
+}
+
+.input-form {
+    width: 500px;
+}
+
+th {
+     -webkit-box-pack: justify;
+    
 }

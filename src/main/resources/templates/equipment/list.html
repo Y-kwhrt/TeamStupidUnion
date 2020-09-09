@@ -2,81 +2,115 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
 <title>設備情報一覧画面</title>
 </head>
 <body>
-	<form th:action="@{/equipment/create}" th:object="${equipmentFormData}" method="post">
-		<table>
-			<tr><th>品名:</th>
-			    <td><input type="text" th:errorclass="error-input" th:field="*{type}"></td>
-			    <td><span th:if="${#fields.hasErrors('type')}" th:errors="*{type}"class="error-messages">error!</span></td>
-	        </tr>
-			<tr><th>型番：</th>
-			    <td><input type="text" th:errorclass="error-input" th:field="*{model}"></td>
-			    <td><span th:if="${#fields.hasErrors('model')}" th:errors="*{model}"class="error-messages">error!</span></td>
-		    </tr>
-			<tr><th>メーカー:</th>
-			    <td><input type="text" th:errorclass="error-input" th:field="*{manufacturer}"></td>
-			    <td><span th:if="${#fields.hasErrors('manufacturer')}" th:errors="*{manufacturer}"class="error-messages">error!</span></td>
-		    </tr>
-			<tr><th>仕様：</th>
-			    <td><input type="text" th:errorclass="error-input" th:field="*{spec}"></td>
-			    <td><span th:if="${#fields.hasErrors('spec')}" th:errors="*{spec}"class="error-messages">error!</span></td>
-		    </tr>
-			<tr><th>購入日：</th>
-			    <td><input type="date" th:errorclass="error-input" th:field="*{purchaceDate}"></td>
-			    <td><span th:if="${#fields.hasErrors('purchaceDate')}" th:errors="*{purchaceDate}"class="error-messages">error!</span></td>
-		    </tr>
-			<tr><th>耐用年数：	</th>
-			    <td><input type="number" th:errorclass="error-input" th:field="*{lifespanInYears}"></td>
-			    <td><span th:if="${#fields.hasErrors('lifespanInYears')}" th:errors="*{lifespanInYears}"class="error-messages">error!</span></td>
-		    </tr>
-		</table>
-		<input type="submit" value="作成">
-	</form>
-	<hr>
-	<table>
-		<tr>
-			<th>管理番号</th>
-			<th>品名</th>
-			<th>型番</th>
-			<th>メーカー</th>
-			<th>仕様</th>
-			<th>購入日</th>
-			<th>耐用年数</th>
-			<th>減価償却済み</th>
-			<th>使用不能</th>
-			<th>貸出可能</th>
-			<th>設置場所</th>
-			<th>使用期限</th>
-		</tr>
-		<tr th:each="equipment : ${equipments}" th:object="${equipment}">
-			<th><span class="equipment-id" th:text="*{id}"></span></th>
-			<td><span class="equipment-type" th:text="*{type}"></span></td>
-			<td><span class="equipment-model" th:text="*{model}"></span></td>
-			<td><span class="equipment-manufacturer" th:text="*{manufacturer}"></span></td>
-			<td><span class="equipment-spec" th:text="*{spec}"></span></td>
-			<td><span class="equipment-purchaceDate" th:text="*{#dates.format(purchaceDate, 'yyyy-MM-dd')}"></span></td>
-			<td><span class="equipment-lifespanInYears" th:text="*{lifespanInYears}"></span></td>
-			<td><span class="equipment-depreciated" th:text="*{depreciated}"></span></td>
-			<td><span class="equipment-unusable" th:text="*{unusable}"></span></td>
-			<td><span class="equipment-lendable" th:text="*{lendable}"></span></td>
-			<td><span class="equipment-installationLocation" th:text="*{installationLocation}"></span></td>
-			<td><span class="equipment-expiryDate" th:text="*{#dates.format(expiryDate, 'yyyy-MM-dd')}"></span></td>
-			<td>
-				<form th:action="@{/equipment/edit}" method="post">
-					<input type="submit" name="form" value="編集">
-					<input type="hidden" name="id"   th:value="*{id}">
-				</form>
-			</td>
-			<td>
-				<form th:action="@{/equipment/delete}" method="post">
-					<input type="submit" name="form" value="削除">
-					<input type="hidden" name="id"   th:value="*{id}">
-				</form>
-			</td>
-		</tr>
-	</table>
+    <form th:action="@{/equipment/create}"
+        th:object="${equipmentFormData}" method="post">
+
+        <p class="input-title">test1</p>
+
+        <p>
+            <span class="input-title">品名</span> <span
+                th:if="${#fields.hasErrors('type')}" th:errors="*{type}"
+                class="error-messages">error!</span>
+        </p>
+        <input type="text" class="input-form"
+            th:errorclass="error-input" th:field="*{type}">
+
+        <p>
+            <span class="input-title">型番</span> <span
+                th:if="${#fields.hasErrors('model')}"
+                th:errors="*{model}" class="error-messages">error!</span>
+        </p>
+        <input type="text" th:errorclass="error-input"
+            class="input-form" th:field="*{model}">
+
+        <p>
+            <span class="input-title">メーカー:</span> <span
+                th:if="${#fields.hasErrors('manufacturer')}"
+                th:errors="*{manufacturer}" class="error-messages">error!</span>
+        </p>
+        <input type="text" class="input-form"
+            th:errorclass="error-input" th:field="*{manufacturer}">
+
+        <p>
+            <span class="input-title">仕様：</span> <span
+                th:if="${#fields.hasErrors('spec')}" th:errors="*{spec}"
+                class="error-messages">error!</span>
+        </p>
+        <input type="text" class="input-form"
+            th:errorclass="error-input" th:field="*{spec}">
+
+        <p>
+            <span class="input-title">購入日：</span> <span
+                th:if="${#fields.hasErrors('purchaceDate')}"
+                th:errors="*{purchaceDate}" class="error-messages">error!</span>
+        </p>
+        <input type="date" class="input-form"
+            th:errorclass="error-input" th:field="*{purchaceDate}">
+
+        <p>
+            <span class="input-title">耐用年数：</span> <span
+                th:if="${#fields.hasErrors('lifespanInYears')}"
+                th:errors="*{lifespanInYears}" class="error-messages">error!</span>
+        </p>
+        <input type="number" class="input-form"
+            th:errorclass="error-input" th:field="*{lifespanInYears}">
+
+        <input type="submit" value="作成">
+    </form>
+    <hr>
+    <table>
+        <tr>
+            <th>管理番号</th>
+            <th>品名</th>
+            <th>型番</th>
+            <th>メーカー</th>
+            <th>仕様</th>
+            <th>購入日</th>
+            <th>耐用年数</th>
+            <th>減価償却済み</th>
+            <th>使用不能</th>
+            <th>貸出可能</th>
+            <th>設置場所</th>
+            <th>使用期限</th>
+        </tr>
+        <tr th:each="equipment : ${equipments}" th:object="${equipment}">
+            <th><span class="equipment-id" th:text="*{id}"></span></th>
+            <td><span class="equipment-type" th:text="*{type}"></span></td>
+            <td><span class="equipment-model" th:text="*{model}"></span></td>
+            <td><span class="equipment-manufacturer"
+                th:text="*{manufacturer}"></span></td>
+            <td><span class="equipment-spec" th:text="*{spec}"></span></td>
+            <td><span class="equipment-purchaceDate"
+                th:text="*{#dates.format(purchaceDate, 'yyyy-MM-dd')}"></span></td>
+            <td><span class="equipment-lifespanInYears"
+                th:text="*{lifespanInYears}"></span></td>
+            <td><span class="equipment-depreciated"
+                th:text="*{depreciated}"></span></td>
+            <td><span class="equipment-unusable"
+                th:text="*{unusable}"></span></td>
+            <td><span class="equipment-lendable"
+                th:text="*{lendable}"></span></td>
+            <td><span class="equipment-installationLocation"
+                th:text="*{installationLocation}"></span></td>
+            <td><span class="equipment-expiryDate"
+                th:text="*{#dates.format(expiryDate, 'yyyy-MM-dd')}"></span></td>
+            <td>
+                <form th:action="@{/equipment/edit}" method="post">
+                    <input type="submit" name="form" value="編集">
+                    <input type="hidden" name="id" th:value="*{id}">
+                </form>
+            </td>
+            <td>
+                <form th:action="@{/equipment/delete}" method="post">
+                    <input type="submit" name="form" value="削除">
+                    <input type="hidden" name="id" th:value="*{id}">
+                </form>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
