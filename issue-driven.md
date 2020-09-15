@@ -27,7 +27,9 @@ GitHubの便利機能。
   **ex**) `issue-#10_Update_Readme`  
 0. **2.** に連携した **3.** の *Pull Request* を作成  
   連携: *Pull Request* が解決したら *issue* も閉じられるようにすること。  
-  連携方法は *Pull Request* の項を参照。  
+  close #${issueId} をコメントの適当な場所に入れておけば連携できる。  
+  **ex**) close #10  
+  issueへのリンクにもなるので便利。
 0. **4.** を Merge [する/してもらう]
 
 ↓つまりこんな感じ
