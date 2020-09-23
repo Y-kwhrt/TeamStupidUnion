@@ -95,4 +95,15 @@ public class EquipmentControllerTest {
 					assertThat(value).hasSize(1)
 				);
 	}
+
+	@Test
+	public void listIsEmpty() throws Exception {
+		MvcResult result = mockMvc.perform(get(urlRoot))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+				.andReturn();
+		List<EquipmentFormData> list = (List<EquipmentFormData>) result.getModelAndView().getModel().get("equipments");
+
+		assertThat(list).isEmpty();
+	}
 }
