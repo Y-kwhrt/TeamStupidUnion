@@ -3,11 +3,15 @@ package jp.ac.jc_21.stupidunion.equipmenegercontroller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import jp.ac.jc_21.stupidunion.equipmeneger.formdata.EquipmentFormData;
+import jp.ac.jc_21.stupidunion.equipmeneger.repository.IEquipmentRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,11 +45,15 @@ import jp.ac.jc_21.stupidunion.equipmeneger.Equipmeneger;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class EquipmentControllerTest {
 	static final String urlRoot = "/equipment";
+	static final String urlCreate = urlRoot + "/create";
 	@Autowired
 	MockMvc mockMvc;
 	@Autowired
 	WebApplicationContext wac;
 	WebClient webClient;
+
+	@Autowired
+	IEquipmentRepository repository;
 
 	@BeforeAll
 	public void テスト前処理() {
@@ -63,17 +71,28 @@ public class EquipmentControllerTest {
 	@Test
 	public void createFormExists() throws Exception {
 		MvcResult result = mockMvc.perform(get(urlRoot))
-				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)).andReturn();
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+				.andReturn();
 
 		String url = result.getRequest().getRequestURL().toString();
 		HtmlPage page = webClient.getPage(url);
 
-		Map<String, DomElement> inputForms =
-				Arrays
-				.asList("type", "model", "manufacturer", "spec", "purchaceDate", "lifespanInYears")
+		HtmlElement createForm = (HtmlElement) page.getElementsByTagName("FORM")
 				.stream()
-				.collect(Collectors.toMap(it -> it, it -> page.getElementById(it)));
-		
-		assertThat(inputForms).doesNotContainValue(null);
+				.filter(element-> element.getAttribute("action").equals(urlCreate))
+				.findFirst().orElseThrow(()-> new IllegalStateException("create form not found"));
+
+		Map<String, List<HtmlElement>> inputForms =
+				Stream.of("type", "model", "manufacturer", "spec", "purchaceDate", "lifespanInYears")
+				.collect(Collectors.toMap(
+						it -> it,
+						it -> createForm.getElementsByAttribute("INPUT", "name", it)
+				));
+
+		assertThat(inputForms)
+				.allSatisfy((key, value) ->
+					assertThat(value).hasSize(1)
+				);
 	}
 }
