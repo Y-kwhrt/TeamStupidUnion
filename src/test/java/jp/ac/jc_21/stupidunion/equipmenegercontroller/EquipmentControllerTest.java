@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import jp.ac.jc_21.stupidunion.equipmeneger.formdata.EquipmentFormData;
 import jp.ac.jc_21.stupidunion.equipmeneger.repository.IEquipmentRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -78,10 +79,7 @@ public class EquipmentControllerTest {
 		String url = result.getRequest().getRequestURL().toString();
 		HtmlPage page = webClient.getPage(url);
 
-		HtmlElement createForm = (HtmlElement) page.getElementsByTagName("FORM")
-				.stream()
-				.filter(element-> element.getAttribute("action").equals(urlCreate))
-				.findFirst().orElseThrow(()-> new IllegalStateException("create form not found"));
+		HtmlForm createForm = getCreateForm(page);
 
 		Map<String, List<HtmlElement>> inputForms =
 				Stream.of("type", "model", "manufacturer", "spec", "purchaceDate", "lifespanInYears")
@@ -123,5 +121,12 @@ public class EquipmentControllerTest {
 	}
 	public void dataOfStoredToRepositoryExistsInListView() throws Exception {
 
+	}
+
+	private HtmlForm getCreateForm(HtmlPage page) throws Exception {
+		return (HtmlForm) page.getElementsByTagName("FORM")
+				.stream()
+				.filter(element -> element.getAttribute("action").equals(urlCreate))
+				.findFirst().orElseThrow(() -> new IllegalStateException("create form not found"));
 	}
 }
