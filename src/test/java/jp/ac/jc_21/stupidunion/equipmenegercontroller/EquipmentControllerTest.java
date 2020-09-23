@@ -106,4 +106,22 @@ public class EquipmentControllerTest {
 
 		assertThat(list).isEmpty();
 	}
+
+	@Test
+	public void submitAndView() throws Exception {
+		dataOfStoredToRepositoryExistsInListView();
+		dataOfSubmittedOnCreateFormExistsInRepository();
+	}
+	public void dataOfSubmittedOnCreateFormExistsInRepository() throws Exception {
+		MvcResult result = mockMvc.perform(get(urlRoot))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+				.andReturn();
+		String url = result.getRequest().getRequestURL().toString();
+		HtmlPage page = webClient.getPage(url);
+
+	}
+	public void dataOfStoredToRepositoryExistsInListView() throws Exception {
+
+	}
 }
