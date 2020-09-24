@@ -1,10 +1,8 @@
 package jp.ac.jc_21.stupidunion.equipmenegercontroller;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.*;
+import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLSpanElement;
 import jp.ac.jc_21.stupidunion.equipmeneger.Equipmeneger;
 import jp.ac.jc_21.stupidunion.equipmeneger.formdata.EquipmentFormData;
 import jp.ac.jc_21.stupidunion.equipmeneger.repository.IEquipmentRepository;
@@ -33,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.list;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,7 +43,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class EquipmentControllerTest {
-	static final String urlRoot = "/equipment";
+	static final String tableName = "equipment";
+	static final String urlRoot = "/"+ tableName;
 	static final String urlCreate = urlRoot + "/create";
 	@Autowired
 	MockMvc mockMvc;
@@ -108,20 +108,71 @@ public class EquipmentControllerTest {
 
 	@Test
 	public void submitAndView() throws Exception {
-		dataOfStoredToRepositoryExistsInListView();
-		dataOfSubmittedOnCreateFormExistsInRepository();
+		Map<String, String> inputMap = Map.of(
+				"type", "Type",
+				"model", "Model",
+				"manufacturer", "Manufacturer",
+				"spec", "Spec",
+				"purchaceDate", "2020-10-10",
+				"lifespanInYears", "1"
+		);
+
+		postCreateForm(inputMap);
+		dataOfStoredToRepositoryExistsInListView(inputMap);
 	}
-	public void dataOfSubmittedOnCreateFormExistsInRepository() throws Exception {
+	public HtmlPage postCreateForm(Map<String, String> inputMap) throws Exception {
 		MvcResult result = mockMvc.perform(get(urlRoot))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
 				.andReturn();
 		String url = result.getRequest().getRequestURL().toString();
 		HtmlPage page = webClient.getPage(url);
+		HtmlForm form = getCreateForm(page);
 
+		HtmlSubmitInput submitButton = (HtmlSubmitInput) form.getElementsByAttribute("INPUT", "type", "submit")
+				.stream()
+				.findFirst()
+				.orElseThrow(() -> new IllegalStateException("create form submit button not found"));
+
+		inputMap.forEach((key, value) -> form.getInputByName(key).setValueAttribute(value));
+		return submitButton.click();
 	}
-	public void dataOfStoredToRepositoryExistsInListView() throws Exception {
+	public void dataOfStoredToRepositoryExistsInListView(Map<String, String> inputMap) throws Exception {
+		MvcResult result = mockMvc.perform(get(urlRoot))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+				.andReturn();
+		String url = result.getRequest().getRequestURL().toString();
+		HtmlPage page = webClient.getPage(url);
+		Stream<Map.Entry<HtmlSpan, String>> listContents =
+			page.getElementsByTagName("SPAN")
+					.stream()
+					.map(span -> (HtmlSpan) span)
+					.filter(span -> span.hasAttribute("class"))
+					.collect(Collectors.toMap(
+							span -> span,
+							span -> span.getAttribute("class")
+					))
+					.entrySet().stream()
+					.filter(entry -> entry.getValue().contains(tableName +"-"));
+//					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+		listContents.map(it-> it.getKey(), it-> it.getValue());
+		// Stream<Map.Entry<HtmlSpan, String>> の変数に対して .map({}, {}) できんが？？
+
+		Map<String, List<Map.Entry<HtmlSpan, String>>> map =
+			inputMap.keySet()
+					.stream()
+					.collect(Collectors.toMap(
+							key -> key,
+							key -> listContents
+									.filter(entry -> entry.getValue().contains(tableName +"-"+ key))
+									.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+					));
+		assertThat(listContents)
+				.allSatisfy(entry ->{
+					
+				});
 	}
 
 	private HtmlForm getCreateForm(HtmlPage page) throws Exception {
@@ -129,5 +180,11 @@ public class EquipmentControllerTest {
 				.stream()
 				.filter(element -> element.getAttribute("action").equals(urlCreate))
 				.findFirst().orElseThrow(() -> new IllegalStateException("create form not found"));
+	}
+	private HtmlSubmitInput getSubmitButton(HtmlForm form) throws Exception {
+		return (HtmlSubmitInput) form.getElementsByAttribute("INPUT", "type", "submit")
+				.stream()
+				.findFirst()
+				.orElseThrow(() -> new IllegalStateException("create form submit button not found"));
 	}
 }
