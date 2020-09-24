@@ -1,16 +1,11 @@
 package jp.ac.jc_21.stupidunion.equipmenegercontroller;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import jp.ac.jc_21.stupidunion.equipmeneger.Equipmeneger;
 import jp.ac.jc_21.stupidunion.equipmeneger.formdata.EquipmentFormData;
 import jp.ac.jc_21.stupidunion.equipmeneger.repository.IEquipmentRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,11 +27,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import jp.ac.jc_21.stupidunion.equipmeneger.Equipmeneger;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ContextConfiguration(classes = Equipmeneger.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -81,13 +80,15 @@ public class EquipmentControllerTest {
 
 		HtmlForm createForm = getCreateForm(page);
 
+		HtmlSubmitInput submitButton = getSubmitButton(createForm);
+		assertThat(submitButton).isNotNull();
+
 		Map<String, List<HtmlElement>> inputForms =
 				Stream.of("type", "model", "manufacturer", "spec", "purchaceDate", "lifespanInYears")
 				.collect(Collectors.toMap(
 						it -> it,
 						it -> createForm.getElementsByAttribute("INPUT", "name", it)
 				));
-
 		assertThat(inputForms)
 				.allSatisfy((key, value) ->
 					assertThat(value).hasSize(1)
