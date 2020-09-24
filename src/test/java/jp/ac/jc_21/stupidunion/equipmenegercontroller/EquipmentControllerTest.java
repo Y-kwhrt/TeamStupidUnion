@@ -3,6 +3,7 @@ package jp.ac.jc_21.stupidunion.equipmenegercontroller;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
 import jp.ac.jc_21.stupidunion.equipmeneger.Equipmeneger;
+import jp.ac.jc_21.stupidunion.equipmeneger.bean.EquipmentBean;
 import jp.ac.jc_21.stupidunion.equipmeneger.formdata.EquipmentFormData;
 import jp.ac.jc_21.stupidunion.equipmeneger.repository.IEquipmentRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -114,11 +116,11 @@ public class EquipmentControllerTest {
 				"purchaceDate", "2020-10-10",
 				"lifespanInYears", "1"
 		);
-
-		postCreateForm(inputMap);
-		dataOfStoredToRepositoryExistsInListView(inputMap);
+		final var bean = dataOfSubmittedOnCreateFormExistsInRepository(inputMap);
+		final var outputMap = beanToMap(bean);
+		dataOfStoredToRepositoryExistsInListView(outputMap);
 	}
-	public void postCreateForm(Map<String, String> inputMap) throws Exception {
+	public EquipmentBean dataOfSubmittedOnCreateFormExistsInRepository(Map<String, String> inputMap) throws Exception {
 		MvcResult result = mockMvc.perform(get(urlRoot))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
@@ -134,6 +136,7 @@ public class EquipmentControllerTest {
 
 		inputMap.forEach((key, value) -> form.getInputByName(key).setValueAttribute(value));
 		submitButton.click();
+		return repository.findAll().stream().findFirst().orElseThrow(()-> new IllegalStateException("posted data does not exist in repository"));
 	}
 	public void dataOfStoredToRepositoryExistsInListView(Map<String, String> inputMap) throws Exception {
 		MvcResult result = mockMvc.perform(get(urlRoot))
@@ -164,6 +167,28 @@ public class EquipmentControllerTest {
 					var content = contents.get(0);
 					assertThat(content.getTextContent()).isEqualTo(inputMap.get(key));
 				});
+	}
+	private Map<String, String> beanToMap(EquipmentBean bean) {
+		final var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		var map = new java.util.HashMap<String, String>(Map.of(
+				"id", bean.getId() + "",
+				"type", bean.getType(),
+				"model", bean.getModel(),
+				"manufacturer", bean.getManufacturer(),
+				"spec", bean.getSpec(),
+				"purchaceDate", dateFormat.format(bean.getPurchaceDate()),
+				"lifespanInYears", bean.getLifespanInYears() + "",
+				"depreciated", bean.isDepreciated() + "",
+				"unusable", bean.isUnusable() + "",
+				"lendable", bean.isLendable() + ""
+		));
+		map.put("installationLocation", bean.getInstallationLocation());
+		final var expiryDate = bean.getExpiryDate();
+		if (expiryDate == null)
+			map.put("expiryDate", "");
+		else
+			map.put("expiryDate", dateFormat.format(bean.getExpiryDate()));
+		return map;
 	}
 
 	private HtmlForm getCreateForm(HtmlPage page) throws Exception {
