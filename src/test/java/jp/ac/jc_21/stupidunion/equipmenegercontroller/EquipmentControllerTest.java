@@ -2,7 +2,6 @@ package jp.ac.jc_21.stupidunion.equipmenegercontroller;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
-import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLSpanElement;
 import jp.ac.jc_21.stupidunion.equipmeneger.Equipmeneger;
 import jp.ac.jc_21.stupidunion.equipmeneger.formdata.EquipmentFormData;
 import jp.ac.jc_21.stupidunion.equipmeneger.repository.IEquipmentRepository;
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.list;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -120,7 +118,7 @@ public class EquipmentControllerTest {
 		postCreateForm(inputMap);
 		dataOfStoredToRepositoryExistsInListView(inputMap);
 	}
-	public HtmlPage postCreateForm(Map<String, String> inputMap) throws Exception {
+	public void postCreateForm(Map<String, String> inputMap) throws Exception {
 		MvcResult result = mockMvc.perform(get(urlRoot))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
@@ -135,7 +133,7 @@ public class EquipmentControllerTest {
 				.orElseThrow(() -> new IllegalStateException("create form submit button not found"));
 
 		inputMap.forEach((key, value) -> form.getInputByName(key).setValueAttribute(value));
-		return submitButton.click();
+		submitButton.click();
 	}
 	public void dataOfStoredToRepositoryExistsInListView(Map<String, String> inputMap) throws Exception {
 		MvcResult result = mockMvc.perform(get(urlRoot))
@@ -144,34 +142,27 @@ public class EquipmentControllerTest {
 				.andReturn();
 		String url = result.getRequest().getRequestURL().toString();
 		HtmlPage page = webClient.getPage(url);
-		Stream<Map.Entry<HtmlSpan, String>> listContents =
-			page.getElementsByTagName("SPAN")
-					.stream()
-					.map(span -> (HtmlSpan) span)
-					.filter(span -> span.hasAttribute("class"))
-					.collect(Collectors.toMap(
-							span -> span,
-							span -> span.getAttribute("class")
-					))
-					.entrySet().stream()
-					.filter(entry -> entry.getValue().contains(tableName +"-"));
-//					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		List<HtmlSpan> listContents =
+				page.getElementsByTagName("SPAN")
+						.stream()
+						.map(span -> (HtmlSpan) span)
+						.filter(span -> span.hasAttribute("class"))
+						.collect(Collectors.toList());
 
-		listContents.map(it-> it.getKey(), it-> it.getValue());
-		// Stream<Map.Entry<HtmlSpan, String>> の変数に対して .map({}, {}) できんが？？
-
-		Map<String, List<Map.Entry<HtmlSpan, String>>> map =
+		Map<String, List<HtmlSpan>> keyAndContentsMap =
 			inputMap.keySet()
 					.stream()
 					.collect(Collectors.toMap(
 							key -> key,
-							key -> listContents
-									.filter(entry -> entry.getValue().contains(tableName +"-"+ key))
-									.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+							key -> listContents.stream()
+									.filter(span -> span.getAttribute("class").contains(tableName +"-"+ key))
+									.collect(Collectors.toList())
 					));
-		assertThat(listContents)
-				.allSatisfy(entry ->{
-					
+		assertThat(keyAndContentsMap)
+				.allSatisfy((key, contents) ->{
+					assertThat(contents).hasSize(1);
+					var content = contents.get(0);
+					assertThat(content.getTextContent()).isEqualTo(inputMap.get(key));
 				});
 	}
 
