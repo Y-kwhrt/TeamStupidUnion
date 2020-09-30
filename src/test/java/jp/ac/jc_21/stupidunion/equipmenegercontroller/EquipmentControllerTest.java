@@ -129,10 +129,7 @@ public class EquipmentControllerTest {
 		HtmlPage page = webClient.getPage(url);
 		HtmlForm form = getCreateForm(page);
 
-		HtmlSubmitInput submitButton = (HtmlSubmitInput) form.getElementsByAttribute("INPUT", "type", "submit")
-				.stream()
-				.findFirst()
-				.orElseThrow(() -> new IllegalStateException("create form submit button not found"));
+		HtmlSubmitInput submitButton = getSubmitButton(form);
 
 		inputMap.forEach((key, value) -> form.getInputByName(key).setValueAttribute(value));
 		submitButton.click();
