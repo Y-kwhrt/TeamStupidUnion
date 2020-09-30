@@ -1,7 +1,8 @@
 package jp.ac.jc_21.stupidunion.equipmenegercontroller;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.*;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import jp.ac.jc_21.stupidunion.equipmeneger.Equipmeneger;
 import jp.ac.jc_21.stupidunion.equipmeneger.bean.EquipmentBean;
 import jp.ac.jc_21.stupidunion.equipmeneger.formdata.EquipmentFormData;
@@ -29,7 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,7 +45,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class EquipmentControllerTest {
 	static final String tableName = "equipment";
 	static final String urlRoot = "/"+ tableName;
-	static final String urlCreate = urlRoot + "/create";
 	@Autowired
 	MockMvc mockMvc;
 	@Autowired
@@ -105,13 +104,7 @@ public class EquipmentControllerTest {
 		dataOfStoredToRepositoryExistsInListView(outputMap);
 	}
 	public EquipmentBean dataOfSubmittedOnCreateFormExistsInRepository(Map<String, String> inputMap) throws Exception {
-		MvcResult result = mockMvc.perform(get(urlRoot))
-				.andExpect(status().isOk())
-				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-				.andReturn();
-		String url = result.getRequest().getRequestURL().toString();
-		HtmlPage page = webClient.getPage(url);
-
+		HtmlPage page = getHtmlPage(urlRoot);
 		var form = CreateForm.from(page);
 		form.setType(inputMap.get("type"));
 		form.setModel(inputMap.get("model"));
@@ -124,12 +117,7 @@ public class EquipmentControllerTest {
 		return repository.findAll().stream().findFirst().orElseThrow(()-> new IllegalStateException("posted data does not exist in repository"));
 	}
 	public void dataOfStoredToRepositoryExistsInListView(Map<String, String> inputMap) throws Exception {
-		MvcResult result = mockMvc.perform(get(urlRoot))
-				.andExpect(status().isOk())
-				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-				.andReturn();
-		String url = result.getRequest().getRequestURL().toString();
-		HtmlPage page = webClient.getPage(url);
+		HtmlPage page = getHtmlPage(urlRoot);
 		List<HtmlSpan> listContents =
 				page.getElementsByTagName("SPAN")
 						.stream()
@@ -155,7 +143,7 @@ public class EquipmentControllerTest {
 	}
 	private Map<String, String> beanToMap(EquipmentBean bean) {
 		final var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		var map = new java.util.HashMap<String, String>(Map.of(
+		var map = new java.util.HashMap<>(Map.of(
 				"id", bean.getId() + "",
 				"type", bean.getType(),
 				"model", bean.getModel(),
@@ -174,5 +162,14 @@ public class EquipmentControllerTest {
 		else
 			map.put("expiryDate", dateFormat.format(bean.getExpiryDate()));
 		return map;
+	}
+	
+	private HtmlPage getHtmlPage(String requestPath) throws Exception {
+		MvcResult mvcResult = mockMvc.perform(get(requestPath))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+				.andReturn();
+		String requestedUrl = mvcResult.getRequest().getRequestURL().toString();
+		return webClient.getPage(requestedUrl);
 	}
 }
