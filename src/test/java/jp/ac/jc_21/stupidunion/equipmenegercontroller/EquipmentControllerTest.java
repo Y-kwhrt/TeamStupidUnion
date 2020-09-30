@@ -1,7 +1,8 @@
 package jp.ac.jc_21.stupidunion.equipmenegercontroller;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.*;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import jp.ac.jc_21.stupidunion.equipmeneger.Equipmeneger;
 import jp.ac.jc_21.stupidunion.equipmeneger.bean.EquipmentBean;
 import jp.ac.jc_21.stupidunion.equipmeneger.formdata.EquipmentFormData;
@@ -29,7 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,7 +45,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class EquipmentControllerTest {
 	static final String tableName = "equipment";
 	static final String urlRoot = "/"+ tableName;
-	static final String urlCreate = urlRoot + "/create";
 	@Autowired
 	MockMvc mockMvc;
 	@Autowired
@@ -74,25 +73,9 @@ public class EquipmentControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
 				.andReturn();
-
 		String url = result.getRequest().getRequestURL().toString();
 		HtmlPage page = webClient.getPage(url);
-
-		HtmlForm createForm = getCreateForm(page);
-
-		HtmlSubmitInput submitButton = getSubmitButton(createForm);
-		assertThat(submitButton).isNotNull();
-
-		Map<String, List<HtmlElement>> inputForms =
-				Stream.of("type", "model", "manufacturer", "spec", "purchaceDate", "lifespanInYears")
-				.collect(Collectors.toMap(
-						it -> it,
-						it -> createForm.getElementsByAttribute("INPUT", "name", it)
-				));
-		assertThat(inputForms)
-				.allSatisfy((key, value) ->
-					assertThat(value).hasSize(1)
-				);
+		CreateForm.from(page); // if not exists, throws ElementNotFoundException.
 	}
 
 	@Test
@@ -121,27 +104,20 @@ public class EquipmentControllerTest {
 		dataOfStoredToRepositoryExistsInListView(outputMap);
 	}
 	public EquipmentBean dataOfSubmittedOnCreateFormExistsInRepository(Map<String, String> inputMap) throws Exception {
-		MvcResult result = mockMvc.perform(get(urlRoot))
-				.andExpect(status().isOk())
-				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-				.andReturn();
-		String url = result.getRequest().getRequestURL().toString();
-		HtmlPage page = webClient.getPage(url);
-		HtmlForm form = getCreateForm(page);
-
-		HtmlSubmitInput submitButton = getSubmitButton(form);
-
-		inputMap.forEach((key, value) -> form.getInputByName(key).setValueAttribute(value));
-		submitButton.click();
+		HtmlPage page = getHtmlPage(urlRoot);
+		var form = CreateForm.from(page);
+		form.setType(inputMap.get("type"));
+		form.setModel(inputMap.get("model"));
+		form.setManufacturer(inputMap.get("manufacturer"));
+		form.setSpec(inputMap.get("spec"));
+		form.setPurchaceDate(inputMap.get("purchaceDate"));
+		form.setLifespanInYears(inputMap.get("lifespanInYears"));
+		form.submit()
+				.orElseThrow(()-> new IllegalStateException("click submit button failure"));
 		return repository.findAll().stream().findFirst().orElseThrow(()-> new IllegalStateException("posted data does not exist in repository"));
 	}
 	public void dataOfStoredToRepositoryExistsInListView(Map<String, String> inputMap) throws Exception {
-		MvcResult result = mockMvc.perform(get(urlRoot))
-				.andExpect(status().isOk())
-				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-				.andReturn();
-		String url = result.getRequest().getRequestURL().toString();
-		HtmlPage page = webClient.getPage(url);
+		HtmlPage page = getHtmlPage(urlRoot);
 		List<HtmlSpan> listContents =
 				page.getElementsByTagName("SPAN")
 						.stream()
@@ -167,7 +143,7 @@ public class EquipmentControllerTest {
 	}
 	private Map<String, String> beanToMap(EquipmentBean bean) {
 		final var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		var map = new java.util.HashMap<String, String>(Map.of(
+		var map = new java.util.HashMap<>(Map.of(
 				"id", bean.getId() + "",
 				"type", bean.getType(),
 				"model", bean.getModel(),
@@ -187,17 +163,13 @@ public class EquipmentControllerTest {
 			map.put("expiryDate", dateFormat.format(bean.getExpiryDate()));
 		return map;
 	}
-
-	private HtmlForm getCreateForm(HtmlPage page) throws Exception {
-		return (HtmlForm) page.getElementsByTagName("FORM")
-				.stream()
-				.filter(element -> element.getAttribute("action").equals(urlCreate))
-				.findFirst().orElseThrow(() -> new IllegalStateException("create form not found"));
-	}
-	private HtmlSubmitInput getSubmitButton(HtmlForm form) throws Exception {
-		return (HtmlSubmitInput) form.getElementsByAttribute("INPUT", "type", "submit")
-				.stream()
-				.findFirst()
-				.orElseThrow(() -> new IllegalStateException("create form submit button not found"));
+	
+	private HtmlPage getHtmlPage(String requestPath) throws Exception {
+		MvcResult mvcResult = mockMvc.perform(get(requestPath))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+				.andReturn();
+		String requestedUrl = mvcResult.getRequest().getRequestURL().toString();
+		return webClient.getPage(requestedUrl);
 	}
 }
