@@ -74,25 +74,9 @@ public class EquipmentControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
 				.andReturn();
-
 		String url = result.getRequest().getRequestURL().toString();
 		HtmlPage page = webClient.getPage(url);
-
-		HtmlForm createForm = getCreateForm(page);
-
-		HtmlSubmitInput submitButton = getSubmitButton(createForm);
-		assertThat(submitButton).isNotNull();
-
-		Map<String, List<HtmlElement>> inputForms =
-				Stream.of("type", "model", "manufacturer", "spec", "purchaceDate", "lifespanInYears")
-				.collect(Collectors.toMap(
-						it -> it,
-						it -> createForm.getElementsByAttribute("INPUT", "name", it)
-				));
-		assertThat(inputForms)
-				.allSatisfy((key, value) ->
-					assertThat(value).hasSize(1)
-				);
+		CreateForm.from(page); // if not exists, throws ElementNotFoundException.
 	}
 
 	@Test
@@ -127,12 +111,16 @@ public class EquipmentControllerTest {
 				.andReturn();
 		String url = result.getRequest().getRequestURL().toString();
 		HtmlPage page = webClient.getPage(url);
-		HtmlForm form = getCreateForm(page);
 
-		HtmlSubmitInput submitButton = getSubmitButton(form);
-
-		inputMap.forEach((key, value) -> form.getInputByName(key).setValueAttribute(value));
-		submitButton.click();
+		var form = CreateForm.from(page);
+		form.setType(inputMap.get("type"));
+		form.setModel(inputMap.get("model"));
+		form.setManufacturer(inputMap.get("manufacturer"));
+		form.setSpec(inputMap.get("spec"));
+		form.setPurchaceDate(inputMap.get("purchaceDate"));
+		form.setLifespanInYears(inputMap.get("lifespanInYears"));
+		form.submit()
+				.orElseThrow(()-> new IllegalStateException("click submit button failure"));
 		return repository.findAll().stream().findFirst().orElseThrow(()-> new IllegalStateException("posted data does not exist in repository"));
 	}
 	public void dataOfStoredToRepositoryExistsInListView(Map<String, String> inputMap) throws Exception {
@@ -186,18 +174,5 @@ public class EquipmentControllerTest {
 		else
 			map.put("expiryDate", dateFormat.format(bean.getExpiryDate()));
 		return map;
-	}
-
-	private HtmlForm getCreateForm(HtmlPage page) throws Exception {
-		return (HtmlForm) page.getElementsByTagName("FORM")
-				.stream()
-				.filter(element -> element.getAttribute("action").equals(urlCreate))
-				.findFirst().orElseThrow(() -> new IllegalStateException("create form not found"));
-	}
-	private HtmlSubmitInput getSubmitButton(HtmlForm form) throws Exception {
-		return (HtmlSubmitInput) form.getElementsByAttribute("INPUT", "type", "submit")
-				.stream()
-				.findFirst()
-				.orElseThrow(() -> new IllegalStateException("create form submit button not found"));
 	}
 }
