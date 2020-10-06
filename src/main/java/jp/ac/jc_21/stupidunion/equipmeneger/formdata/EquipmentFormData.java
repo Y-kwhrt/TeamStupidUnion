@@ -25,7 +25,7 @@ public class EquipmentFormData {
 	private String spec; /* 仕様 */
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull
-	private Date purchaceDate; /* 購入日 */
+	private Date purchaseDate; /* 購入日 */
 	@NotNull
 	@Min(1)
 	private int lifespanInYears; /* 耐用年数 */
