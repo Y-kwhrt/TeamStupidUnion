@@ -13,7 +13,7 @@ public class CreateForm {
     HtmlTextInput model;
     HtmlTextInput manufacturer;
     HtmlTextInput spec;
-    HtmlDateInput purchaceDate;
+    HtmlDateInput purchaseDate;
     HtmlNumberInput lifespanInYears;
     HtmlSubmitInput submitButton;
     private CreateForm(
@@ -21,7 +21,7 @@ public class CreateForm {
             HtmlTextInput model,
             HtmlTextInput manufacture,
             HtmlTextInput spec,
-            HtmlDateInput purchaceDate,
+            HtmlDateInput purchaseDate,
             HtmlNumberInput lifespanInYears,
             HtmlSubmitInput submitButton
     ) {
@@ -29,7 +29,7 @@ public class CreateForm {
         this.model = model;
         this.manufacturer = manufacture;
         this.spec = spec;
-        this.purchaceDate = purchaceDate;
+        this.purchaseDate = purchaseDate;
         this.lifespanInYears = lifespanInYears;
         this.submitButton = submitButton;
     }
@@ -46,8 +46,8 @@ public class CreateForm {
     public void setSpec(String value) {
         spec.setValueAttribute(value);
     }
-    public void setPurchaceDate(String value) {
-        purchaceDate.setValueAttribute(value);
+    public void setpurchaseDate(String value) {
+        purchaseDate.setValueAttribute(value);
     }
     public void setLifespanInYears(String value) {
         lifespanInYears.setValueAttribute(value);
@@ -66,10 +66,10 @@ public class CreateForm {
         var model = (HtmlTextInput) form.getInputByName("model");
         var manufacture = (HtmlTextInput) form.getInputByName("manufacturer");
         var spec = (HtmlTextInput) form.getInputByName("spec");
-        var purchaceDate = (HtmlDateInput) form.getInputByName("purchaceDate");
+        var purchaseDate = (HtmlDateInput) form.getInputByName("purchaseDate");
         var lifespanInYears = (HtmlNumberInput) form.getInputByName("lifespanInYears");
         var submitButton = getSubmitButtonElementFrom(form);
-        return new CreateForm(type, model, manufacture, spec, purchaceDate, lifespanInYears, submitButton);
+        return new CreateForm(type, model, manufacture, spec, purchaseDate, lifespanInYears, submitButton);
     }
     private static HtmlForm getElementFrom(HtmlPage page) {
         return (HtmlForm) page.getElementsByTagName("FORM")

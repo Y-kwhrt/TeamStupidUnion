@@ -36,7 +36,7 @@ public class EquipmentBean {
 	private String spec; /* 仕様 */
 
 	@Column(nullable = false)
-	private Date purchaceDate; /* 購入日 */
+	private Date purchaseDate; /* 購入日 */
 	@Column(nullable = false)
 	private int lifespanInYears; /* 耐用年数 */
 

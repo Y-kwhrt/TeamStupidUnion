@@ -96,7 +96,7 @@ public class EquipmentControllerTest {
 				"model", "Model",
 				"manufacturer", "Manufacturer",
 				"spec", "Spec",
-				"purchaceDate", "2020-10-10",
+				"purchaseDate", "2020-10-10",
 				"lifespanInYears", "1"
 		);
 		final var bean = dataOfSubmittedOnCreateFormExistsInRepository(inputMap);
@@ -110,7 +110,7 @@ public class EquipmentControllerTest {
 		form.setModel(inputMap.get("model"));
 		form.setManufacturer(inputMap.get("manufacturer"));
 		form.setSpec(inputMap.get("spec"));
-		form.setPurchaceDate(inputMap.get("purchaceDate"));
+		form.setpurchaseDate(inputMap.get("purchaseDate"));
 		form.setLifespanInYears(inputMap.get("lifespanInYears"));
 		form.submit()
 				.orElseThrow(()-> new IllegalStateException("click submit button failure"));
@@ -149,7 +149,7 @@ public class EquipmentControllerTest {
 				"model", bean.getModel(),
 				"manufacturer", bean.getManufacturer(),
 				"spec", bean.getSpec(),
-				"purchaceDate", dateFormat.format(bean.getPurchaceDate()),
+				"purchaseDate", dateFormat.format(bean.getPurchaseDate()),
 				"lifespanInYears", bean.getLifespanInYears() + "",
 				"depreciated", bean.isDepreciated() + "",
 				"unusable", bean.isUnusable() + "",
